@@ -1,0 +1,239 @@
+\documentclass[10pt,twoneside]{book}
+%\documentclass[10pt,oneside]{book}
+%\documentclass[14pt]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\pagestyle{headings}
+
+\usepackage{natbib}
+\usepackage{hyperref}
+
+%\renewcommand\bibname{Bibliografía}
+%\renewcommand\bibname{Bibliografy}
+
+\usepackage{titlesec}
+
+
+\usepackage{enumitem}
+
+%\usepackage[spanish]{babel}
+
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+
+\usepackage{blindtext}
+\usepackage[T1]{fontenc}
+%\usepackage[utf8]{inputenc}
+
+\usepackage{bbm}
+
+\usepackage[margin=1in,footskip=.25in]{geometry}
+%\usepackage[margin=1in]{geometry}
+\usepackage{geometry}
+\usepackage{mathtools}
+\usepackage[latin9]{inputenc}
+\usepackage[bottom]{footmisc}	% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{ragged2e}
+\newcommand{\kfour}{\mathbb{K}^4}
+\newcommand{\ktwo}{\mathbb{K}^2}
+\newcommand{\pthree}{\mathbb{P}^3}
+\newcommand{\afin}{\mathbb{A}}
+\newcommand{\ov}{\overrightarrow}
+
+
+\usepackage{tikz-cd}
+
+
+\usepackage{faktor}
+
+
+\usepackage{mathtools}
+
+
+%\usepackage[spanish]{babel} % espaÃ±ol
+%\usepackage[utf8]{inputenc} % acentos sin codigo
+%\usepackage{graphicx} % graficos
+%\usepackage{amssymb}
+%\usepackage{amsmath,amsthm}
+%\usepackage{amsthm}
+
+%\usepackage{hyperref}
+%\usepackage{mathtools}
+\usepackage{mathrsfs} % Letras caligráficas
+\usepackage{bm}
+
+
+\usepackage{tikz-cd}
+\usepackage{xcolor}
+
+\newcommand{\mcm}{\qopname \relax o{mcm}}
+
+\newcommand{\massey}[3]{\langle[ {#1} ],[ {#2} ],[ {#3} ]\rangle}
+\newcommand{\module}[1]{\vert #1 \lvert }
+\newcommand{\dotprod}[2]{\langle #1,#2 \rangle}
+\newcommand{\mbot}{{(\bot)}}
+%\newcommand{\isoequal}{\stackrel{\text{iso}}{=}}
+\newcommand{\isoequal}{\simeq}
+\newcommand{\difequal}{\stackrel{\text{dif}}{=}}
+\newcommand{\defequal}{\stackrel{\text{def}}{=}}
+\newcommand{\isoapprox}{\stackrel{\text{iso}}{\displaystyle\approx}}
+\newcommand{\Cech}{\v{C}ech}
+\newcommand{\difpartial}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\difantipartial}[2]{\frac{\partial #1}{\overline{\partial} #2}}
+\newcommand{\antipartial}{{\overline{\partial }}}
+
+\newcommand{\comilla}{{}"{}}
+
+\newcommand{\norm}[1]{\left\vert\left\vert #1 \right\vert\right\vert}
+
+\newcommand{\e}[2]{e_{#1}^{(#2)}}
+
+\newcommand{\f}[2]{f_{#1}^{(#2)}}
+
+
+\usepackage{amsthm}
+
+\newcounter{fakecnt}[section]
+\def\thefakecnt{\arabic{section}}
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem*{notation}{Notation}
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem*{conjecture}{Conjecture}
+\newtheorem{remark}{Remark}
+\newtheorem{corollary}{Corollary}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+\newtheorem{observation}{Observation}[chapter]
+\newtheorem{example}{Example}[chapter]
+%\renewcommand{proof}{\prof}
+\theoremstyle{definition}
+	\newtheorem{definition}{Definition}[chapter]
+
+
+\newenvironment{hproof}{%
+  \renewcommand{\proofname}{Esquema de demostraci�n}\proof}{\endproof}
+
+ \newenvironment{prof}{%
+  \renewcommand{\proofname}{Proof}\proof}{\endproof}
+
+
+\newcommand{\ifff}{if and only if }
+
+
+\renewcommand\qedsymbol{$QED$}
+
+\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+%\footskip = 0pt
+
+\graphicspath{ {imgs/} }
+
+
+\date{}
+
+\usepackage{caption}
+
+\begin{document}
+
+
+First, if $\rho$ is an exact solution, then it's mass is preserved, meaning $m(t):=\int \rho(t,x)dx=\int \rho_0(x)dx = \text{cst}$.
+Then conservation follows from the boundary conditions:
+    $$
+    m'(t)=\int_\mathbb{R} \partial_t\rho(t,x)dx,
+    =\int_\mathbb{R} \partial_{xx}\rho(t,x)dx,
+    =\partial_x\rho(t,\infty)-\partial_x\rho(t,-\infty),
+    0
+    $$
+
+Now we center on the simpler problem:
+
+$$
+\begin{array}{l l}
+    \partial_t \rho - \varepsilon^2 \Delta \rho &= 0 \text{ on } (0, 1) \times (0,1)\\
+\rho(0,x)&=\rho_0(x),\;\forall x\in [0,1]\\
+    \partial_x\rho(0,t)&=\partial_x\rho(1,t)=0,\;\forall t \in [0,1]\text{Neumann boundary conditions}
+\end{array}
+$$
+
+
+To solve it we implement the Crank-Nicolson method, although we note that an explicit Euler, or implicit Euler in space would work as well.
+Also, order one boundary conditions work just fine.
+
+\begin{equation}
+    \frac{\rho^{n+1}_i - \rho^n_i}{\Delta t} = \frac{\varepsilon^2}{2 (\Delta x)^2} \left[ \left( \rho^{n+1}_{i-1} -2\rho^{n+1}_i +\rho^{n+1}_{i+1} \right)
+    + \left( \rho^{n}_{i-1} -2\rho^{n}_i +\rho^{n}_{i+1} \right) \right]
+\end{equation}
+
+
+Here $\rho(t_n,x_i)=\rho_i^n$.
+Which in matrix form is:
+
+
+\begin{equation}
+\left(
+\begin{array}{c c c c c c c}
+-3 & 4& -1&0&\cdots&\cdots&0\\
+-\alpha & 1+2\alpha & -\alpha & 0&\cdots&\cdots &0\\
+0 &-\alpha & 1+2\alpha & -\alpha & \cdots &\cdots&0\\
+\ddots&\ddots&\ddots&\ddots&\ddots&\ddots&\ddots\\
+0 &\cdots&\cdots&0&-\alpha & 1+2\alpha & -\alpha \\
+0 &\cdots&\cdots&0&1& -4& 3\\
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+\rho_{0}^{n+1}\\
+\vdots\\
+\rho_{i}^{n+1}\\
+\rho_{i+1}^{n+1}\\
+\vdots\\
+\rho_{M}^{n+1}\\
+\end{array}
+\right)
+=
+\left(
+\begin{array}{c c c c c c c}
+0 & 0& 0&\cdots&\cdots&\cdots&0\\
+\alpha & 1-2\alpha & \alpha & \cdots&\cdots&\cdots &0\\
+0 &\alpha & 1-2\alpha & \alpha & \cdots &\cdots&0\\
+\ddots&\ddots&\ddots&\ddots&\ddots&\ddots&\ddots\\
+0 &\cdots&\cdots&\cdots&\alpha & 1-2\alpha & \alpha \\
+0 &\cdots&\cdots&\cdots&\cdots& 0& 0\\
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+\rho_{0}^{n}\\
+\vdots\\
+\rho_{i}^{n}\\
+\rho_{i+1}^{n}\\
+\vdots\\
+\rho_{M}^{n}\\
+\end{array}
+\right)
+\end{equation}
+
+
+To check that the mass is conserved by the method, we observe that the mass:
+$
+m(\rho)=\sum_{i=1}^{M-1} \rho_i
+$
+is preserved by the application of one iteration of the method.
+Furthermore, by linearity, it enough to check on a basis (of the space of vectors which satisfies the boundary condition,
+the method does not preserve the mass for any vector, this is clear from the observation $Le_1=0$):
+Then we observe that $m(Ax)=m(x) \iff m(x)=m(A^{-1})$ in the case where $A$ is invertible.
+So we have to check:
+$$
+\begin{aligned}
+    m(L(e_2))=\cdots=m(L(e_{n-1})=1 \\
+    m(R(e_2))=\cdots=m(R(e_{n-1})=1 \\
+\end{aligned}
+$$
+{\bf Some other conditions}
+Which are trivial to check.
+
+
+
+
+
+\end{document}
