@@ -1,4 +1,4 @@
-\documentclass[10pt,twoneside]{book}
+\documentclass[10pt,twoneside]{article}
 %\documentclass[10pt,oneside]{book}
 %\documentclass[14pt]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
 \pagestyle{headings}
@@ -16,7 +16,7 @@
 
 %\usepackage[spanish]{babel}
 
-\titleformat{\chapter}[display]
+\titleformat{\section}[display]
   {\normalfont\bfseries}{}{0pt}{\Huge}
 
 \usepackage{blindtext}
@@ -97,18 +97,18 @@
 \newcounter{fakecnt}[section]
 \def\thefakecnt{\arabic{section}}
 
-\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{theorem}{Theorem}[section]
 \newtheorem*{notation}{Notation}
-\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{proposition}{Proposition}[section]
 \newtheorem*{conjecture}{Conjecture}
 \newtheorem{remark}{Remark}
-\newtheorem{corollary}{Corollary}[chapter]
-\newtheorem{lemma}{Lemma}[chapter]
-\newtheorem{observation}{Observation}[chapter]
-\newtheorem{example}{Example}[chapter]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{observation}{Observation}[section]
+\newtheorem{example}{Example}[section]
 %\renewcommand{proof}{\prof}
 \theoremstyle{definition}
-	\newtheorem{definition}{Definition}[chapter]
+	\newtheorem{definition}{Definition}[section]
 
 
 \newenvironment{hproof}{%
@@ -134,6 +134,7 @@
 \usepackage{caption}
 
 \begin{document}
+\section{Part 1}
 
 
 First, if $\rho$ is an exact solution, then it's mass is preserved, meaning $m(t):=\int \rho(t,x)dx=\int \rho_0(x)dx = \text{cst}$.
@@ -151,7 +152,7 @@ $$
 \begin{array}{l l}
     \partial_t \rho - \varepsilon^2 \Delta \rho &= 0 \text{ on } (0, 1) \times (0,1)\\
 \rho(0,x)&=\rho_0(x),\;\forall x\in [0,1]\\
-    \partial_x\rho(0,t)&=\partial_x\rho(1,t)=0,\;\forall t \in [0,1]\text{Neumann boundary conditions}
+    \partial_x\rho(0,t)&=\partial_x\rho(1,t)=0,\;\forall t \in [0,1]\;\;\text{Neumann boundary conditions.}
 \end{array}
 $$
 
@@ -179,8 +180,8 @@ R
 
 Where:
 
-$$
-L=
+\begin{align}
+    L&=
 \left(
 \begin{array}{c c c c c c c}
 1 & -1 & 0&0&\cdots&\cdots&0\\
@@ -191,10 +192,8 @@ L=
 0 &\cdots&\cdots&0&0& -1& 1\\
 \end{array}
 \right)
-$$
-
-$$
-R=
+\\
+    R&=
 \left(
 \begin{array}{c c c c c c c}
 0 & 0& 0&\cdots&\cdots&\cdots&0\\
@@ -205,7 +204,7 @@ R=
 0 &\cdots&\cdots&\cdots&\cdots& 0& 0\\
 \end{array}
 \right)
-$$
+\end{align}
 
 
 It is easy to check that $L$ is invertible, since it's strict diagonal dominant if $\vert\alpha\vert<1$.
@@ -217,19 +216,73 @@ $
 is preserved by the application of one iteration of the method.
 Furthermore, by linearity, it enough to check on a basis (of the space of vectors which satisfies the boundary condition,
 the method does not preserve the mass for any vector, this is clear from the observation $Le_1=0$):
-Then we observe that $m(Ax)=m(x) \iff m(x)=m(A^{-1})$ in the case where $A$ is invertible.
+Then we observe that $m(Ax)=m(x) \iff m(x)=m(A^{-1}x)$ in the case where $A$ is invertible.
 So we have to check:
 $$
 \begin{aligned}
-    m(L(e_2))=\cdots=m(L(e_{n-1})=1 \\
-    m(R(e_2))=\cdots=m(R(e_{n-1})=1 \\
+    m(L(e_3))=\cdots=m(L(e_{n-2})=1 \\
+    m(R(e_3))=\cdots=m(R(e_{n-2})=1 \\
+    m(R(e_1+e_2))=m(L(e_1+e_2))=1 \\
+    m(R(e_{n-2}+e_{n-1}))=m(L(e_{n-1}+e_{n-1}))=1 \\
 \end{aligned}
 $$
+
 {\bf Some other conditions}
 Which are trivial to check.
 
+\subsection{Solution mantains positivity}
+
+No idea.
+
+\subsection{Godunov}
 
 
+Choosing $A=L^{-1}R$ and $B(v_i)$ adecuately, it is clear that the system can we written as:
+$$
+\rho^{n+1}=(A+B(v_i))\rho^n
+$$
 
+\section{Part 2: Optimisation}
+
+\subsection{Energy}
+
+
+The energy is defined as:
+$$
+E_{\Delta t,\Delta x}
+=
+\frac{\Delta t}{2}
+\sum_{n=1}^{N-1}
+\langle \rho^n ,q(v^n)\rangle
++
+\langle \rho^N,V\rangle
+$$
+
+
+For the first inequality, the first two terms follow by direct computation, the last term comes from using transposition and
+expanding as a telescopic sum:
+\begin{equation*}
+\langle \rho^{'N},V'\rangle
+-
+\langle \rho^N,V\rangle
+=
+\langle \rho^{'N},\phi'\rangle
+-
+\langle \rho^N,\phi\rangle
+=
+\sum_{i=1}^{N-1}
+    \langle \rho^{'i+1}-\rho^{i+1},\phi^{'i}\rangle
+-
+    \langle \rho^{'i}-\rho^{i},\phi^{'i}\rangle
+\end{equation*}
+
+Where in the last equation we use that $\rho^{'0}=\rho^{0}$.
+
+
+The second part follows similarly:
+
+For the last part:
+
+\subsection{Find v'}
 
 \end{document}
